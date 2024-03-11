@@ -8,3 +8,7 @@ data class Product(
     @SerializedName("price") val productPrice: Int,
     @SerializedName("thumbnail") val poster: String
 )
+
+data class ProductList(
+    @SerializedName("products") val products: List<Product>
+)

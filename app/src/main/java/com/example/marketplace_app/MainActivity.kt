@@ -1,5 +1,6 @@
 package com.example.marketplace_app
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val productPrice: TextView by lazy {findViewById(R.id.product_price_value)}
 
     private val imagePoster: ImageView by lazy {findViewById(R.id.product_image)}
+    private val fab: FloatingActionButton by lazy {findViewById(R.id.fab)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +43,14 @@ class MainActivity : AppCompatActivity() {
 
             ProductApi.INSTANCE.getProduct(id).enqueue(callback)
 
-            productTitle.text = product?.name
+            productTitle.text = product?.name ?: "Loading..."
             productDescription.text = product?.description
-            productPrice.text = product?.productPrice.toString()
+            productPrice.text = "${product?.productPrice.toString()}$"
+        }
+
+        fab.setOnClickListener {
+            intent = Intent(this, ProductsActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -54,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         Glide
             .with(this)
-            .load(Uri.parse("${product?.poster}"))
+            .load(Uri.parse("https://cdn.dummyjson.com/product-images/2/3.jpg"))
             .fitCenter()
             .into(imagePoster)
     }
