@@ -4,11 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
-import com.example.marketplace_app.data.ProductList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +22,10 @@ class ProductsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
         recyclerView = findViewById(R.id.recyclerViewProducts)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val layoutManager = GridLayoutManager(this, 2)
+        recyclerView.layoutManager = layoutManager
+
+
 
         lifecycleScope.launch {
             productList = fetchProductListFromApi()
@@ -50,6 +52,5 @@ class ProductsActivity : AppCompatActivity() {
         Log.d("ProductsActivity", "Response: $list")
         return list
     }
-
 
 }

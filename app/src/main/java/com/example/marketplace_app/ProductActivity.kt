@@ -17,7 +17,7 @@ import retrofit2.Response
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class ProductActivity : AppCompatActivity() {
 
     private val productId: EditText by lazy {findViewById(R.id.product_id_edit)}
     private val loadButton: Button by lazy {findViewById(R.id.load_button)}
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val imagePoster: ImageView by lazy {findViewById(R.id.product_image)}
     private val fab: FloatingActionButton by lazy {findViewById(R.id.fab)}
-
+    //TODO need to add navigation from the ProductsActivity to the ProductActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

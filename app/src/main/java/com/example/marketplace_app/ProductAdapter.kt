@@ -8,12 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.fitCenter
 import com.example.marketplace_app.data.Product
 
 
-class ProductAdapter(private val productList: List<Product>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private val productList: List<Product>,
+    ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater
@@ -29,11 +29,9 @@ class ProductAdapter(private val productList: List<Product>) :
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
 
-        // Set product information to the views
         holder.titleTextView.text = product.name
-        holder.descriptionTextView.text = product.description
-        // You may load the thumbnail image using a library like Picasso or Glide
-        // For simplicity, let's assume you have a URL for the thumbnail
+//        holder.descriptionTextView.text = product.description
+
         Glide.with(holder.itemView.context)
             .load(Uri.parse(product.poster))
             .fitCenter()
@@ -48,7 +46,7 @@ class ProductAdapter(private val productList: List<Product>) :
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val thumbnailImageView: ImageView = itemView.findViewById(R.id.imageViewThumbnail)
         val titleTextView: TextView = itemView.findViewById(R.id.textViewTitle)
-        val descriptionTextView: TextView = itemView.findViewById(R.id.textViewDescription)
+//        val descriptionTextView: TextView = itemView.findViewById(R.id.textViewDescription)
     }
 }
 

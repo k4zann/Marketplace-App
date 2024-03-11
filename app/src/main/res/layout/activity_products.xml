@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- RecyclerView with GridLayout to display the list of products -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
@@ -11,6 +10,7 @@
         android:padding="8dp"
         android:clipToPadding="false"
         android:layout_gravity="center"
-        android:numColumns="2"/>
+        android:scrollbars="vertical"/>
 
 </RelativeLayout>
+<!-- Need to change a bit the design of the layout, it's too simple-->
