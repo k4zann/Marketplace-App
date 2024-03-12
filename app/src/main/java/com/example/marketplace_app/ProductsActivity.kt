@@ -1,9 +1,9 @@
 package com.example.marketplace_app
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +20,6 @@ class ProductsActivity : AppCompatActivity() {
     private var skip = 0
     private var limit = 20
     private var total = 0
-    private var isLastElement = false
     private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,20 +36,14 @@ class ProductsActivity : AppCompatActivity() {
                 val visibleItemCount = layoutManager.childCount
                 val totalItemCount = layoutManager.itemCount
                 val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                if (!isLoading && !isLastElement) {
-                    Log.d("ProductsActivity", "Loading more products ${visibleItemCount + firstVisibleItemPosition} $totalItemCount")
-                    if (totalItemCount <= total
-                    ) {
-                        Log.d("ProductsActivity", "Loading more products $skip $limit")
-                        loadMoreItems()
-                    }
+                if (!isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0
+                ) {
+                    loadMoreItems()
                 }
             }
         })
-        if (!isLastElement) {
-            Log.d("ProductsActivity", "Loading products")
-            loadProducts()
-        }
+        loadProducts()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -61,12 +54,12 @@ class ProductsActivity : AppCompatActivity() {
                     ProductApi.INSTANCE.getProducts(skip, limit).execute()
                 }
                 if (response.isSuccessful) {
-                    val data = response.body()?.products ?: emptyList()
-                    total = response.body()?.total ?: 0
+                    val productResponse = response.body()
+                    val data = productResponse?.products ?: emptyList()
+                    total = productResponse?.total ?: 0
                     productList.addAll(data)
-                    limit += 20
-                    skip += 20
                     productAdapter.notifyDataSetChanged()
+                    skip += limit
                 } else {
                     Log.e("ProductsActivity", "Failed to fetch products: ${response.errorBody()}")
                 }
@@ -85,13 +78,12 @@ class ProductsActivity : AppCompatActivity() {
                     ProductApi.INSTANCE.getProducts(skip, limit).execute()
                 }
                 if (response.isSuccessful) {
-                    val data = response.body()?.products ?: emptyList()
+                    val productResponse = response.body()
+                    val data = productResponse?.products ?: emptyList()
                     productList.addAll(data)
-                    Log.d("ProductsActivity", "Loaded ${productList.size} more products")
                     productAdapter.notifyDataSetChanged()
                     isLoading = false
-                    skip += 20
-                    limit += 20
+                    skip += limit
                 } else {
                     Log.e("ProductsActivity", "Failed to fetch products: ${response.errorBody()}")
                 }
