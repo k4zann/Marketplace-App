@@ -1,5 +1,3 @@
-package com.example.marketplace_app.api
-
 import com.example.marketplace_app.data.Product
 import com.example.marketplace_app.data.ProductList
 import retrofit2.Call
@@ -7,10 +5,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProductApi {
+
     @GET("products")
-    fun getProducts(): Call<ProductList>
+    fun getProducts(
+        @Query("skip") skip: Int,
+        @Query("limit") limit: Int
+    ): Call<ProductList>
 
 
     @GET("products/{id}")

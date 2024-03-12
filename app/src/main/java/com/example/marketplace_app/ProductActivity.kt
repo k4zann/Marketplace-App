@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +30,7 @@ class ProductActivity : AppCompatActivity() {
     //TODO need to add navigation from the ProductsActivity to the ProductActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_product)
     }
 
     override fun onStart() {

@@ -9,8 +9,7 @@
         android:layout_height="match_parent"
         android:padding="8dp"
         android:clipToPadding="false"
-        android:layout_gravity="center"
+        android:paddingBottom="24dp"
         android:scrollbars="vertical"/>
-
 </RelativeLayout>
 <!-- Need to change a bit the design of the layout, it's too simple-->

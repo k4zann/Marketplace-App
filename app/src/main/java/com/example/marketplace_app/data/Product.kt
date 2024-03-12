@@ -10,5 +10,7 @@ data class Product(
 )
 
 data class ProductList(
-    @SerializedName("products") val products: List<Product>
+    @SerializedName("products") val products: List<Product>,
+    @SerializedName("total") val total: Int
 )
+

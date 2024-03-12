@@ -37,6 +37,7 @@ class ProductAdapter(
             .fitCenter()
             .centerCrop()
             .into(holder.thumbnailImageView)
+
     }
 
     override fun getItemCount(): Int {
