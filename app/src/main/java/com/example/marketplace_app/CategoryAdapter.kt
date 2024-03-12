@@ -36,7 +36,9 @@ class CategoryAdapter(
 
         fun bind(category: String) {
             categoryNameTextView.text = category
-            itemView.setOnClickListener { onItemClick(category) }
+            itemView.setOnClickListener {
+                onItemClick(category)
+            }
         }
     }
 }

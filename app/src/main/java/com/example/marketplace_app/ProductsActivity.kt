@@ -151,6 +151,7 @@ class ProductsActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     var categories = response.body() ?: emptyList()
                     categories = categories.map { it.capitalize() }
+                    categories = listOf("All") + categories
                     Log.d("ProductsActivity", "Categories: $categories")
                     categoryAdapter.setCategories(categories)
                 } else {
@@ -167,7 +168,11 @@ class ProductsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    ProductApi.INSTANCE.getProductsByCategory(category).execute()
+                    if (category == "All") {
+                        ProductApi.INSTANCE.getProducts(0, limit).execute()
+                    } else {
+                        ProductApi.INSTANCE.getProductsByCategory(category).execute()
+                    }
                 }
                 if (response.isSuccessful) {
                     val data = response.body()?.products ?: emptyList()

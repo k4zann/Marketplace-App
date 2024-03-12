@@ -1,6 +1,7 @@
 // ProductAdapter.kt
 package com.example.marketplace_app
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,13 +37,25 @@ class ProductAdapter(
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val productName: TextView = itemView.findViewById(R.id.textViewTitle)
-//        private val productDescription: TextView = itemView.findViewById(R.id.product_description_text)
         private val productPrice: TextView = itemView.findViewById(R.id.textViewPrice)
         private val productImage: ImageView = itemView.findViewById(R.id.imageViewThumbnail)
 
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val product = productList[position]
+                    val context = itemView.context
+                    val intent = Intent(context, ProductActivity::class.java).apply {
+                        putExtra("productId", product.id)
+                    }
+                    context.startActivity(intent)
+                }
+            }
+        }
+
         fun bind(product: Product) {
             productName.text = product.name
-//            productDescription.text = product.description
             productPrice.text = "${product.productPrice}$"
             Glide.with(itemView.context)
                 .load(product.poster)
@@ -50,4 +63,5 @@ class ProductAdapter(
                 .into(productImage)
         }
     }
+
 }
