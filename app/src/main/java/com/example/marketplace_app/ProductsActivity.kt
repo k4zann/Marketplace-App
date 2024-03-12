@@ -3,7 +3,9 @@ package com.example.marketplace_app
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +45,9 @@ class ProductsActivity : AppCompatActivity() {
                 }
             }
         })
+
+        setupSearchView()
+
         loadProducts()
     }
 
@@ -92,4 +97,36 @@ class ProductsActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setupSearchView() {
+        val searchView = findViewById<EditText>(R.id.editTextSearch)
+        searchView.setOnEditorActionListener { _, _, _ ->
+            val query = searchView.text.toString()
+            performSearch(query)
+            true
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun performSearch(query: String) {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    ProductApi.INSTANCE.searchProducts(query).execute()
+                }
+                if (response.isSuccessful) {
+                    val data = response.body()?.products ?: emptyList()
+                    total = response.body()?.total ?: 0
+                    productAdapter.updateProducts(data.toMutableList())
+                    productAdapter.notifyDataSetChanged()
+                } else {
+                    Log.e("ProductsActivity", "Failed to fetch search results: ${response.errorBody()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProductsActivity", "Error searching products", e)
+            }
+        }
+    }
+
+
 }

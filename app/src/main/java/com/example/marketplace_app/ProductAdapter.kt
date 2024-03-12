@@ -27,7 +27,7 @@ class ProductAdapter(
 
     override fun getItemCount(): Int = productList.size
 
-    fun updateProducts(newProducts: List<Product>) {
+    fun updateProducts(newProducts: MutableList<Product>) {
         val diffResult = DiffUtil.calculateDiff(ProductDiffCallback(productList, newProducts))
         productList.clear()
         productList.addAll(newProducts)

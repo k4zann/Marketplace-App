@@ -15,9 +15,12 @@ interface ProductApi {
         @Query("limit") limit: Int
     ): Call<ProductList>
 
-
     @GET("products/{id}")
     fun getProduct(@Path("id") id: Long): Call<Product>
+
+    @GET("products/search")
+    fun searchProducts(@Query("q") query: String): Call<ProductList>
+
 
     companion object {
         val INSTANCE = Retrofit.Builder()
