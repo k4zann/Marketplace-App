@@ -21,6 +21,11 @@ interface ProductApi {
     @GET("products/search")
     fun searchProducts(@Query("q") query: String): Call<ProductList>
 
+    @GET("products/categories")
+    fun getCategories(): Call<List<String>>
+
+    @GET("products/category/{categoryName}")
+    fun getProductsByCategory(@Path("categoryName") categoryName: String): Call<ProductList>
 
     companion object {
         val INSTANCE = Retrofit.Builder()

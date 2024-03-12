@@ -3,7 +3,7 @@ package com.example.marketplace_app
 import androidx.recyclerview.widget.DiffUtil
 import com.example.marketplace_app.data.Product
 
-class ProductDiffCallback(
+class DiffCallback(
     private val oldList: List<Product>,
     private val newList: List<Product>
 ) : DiffUtil.Callback() {

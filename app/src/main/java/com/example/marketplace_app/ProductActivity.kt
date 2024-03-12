@@ -61,7 +61,7 @@ class ProductActivity : AppCompatActivity() {
 
         Glide
             .with(this)
-            .load(Uri.parse("https://cdn.dummyjson.com/product-images/2/3.jpg"))
+            .load(Uri.parse(product?.poster))
             .fitCenter()
             .into(imagePoster)
     }

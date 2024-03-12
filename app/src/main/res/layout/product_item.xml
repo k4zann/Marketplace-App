@@ -35,14 +35,15 @@
         android:text="default_price"/>
 
 
-    <!-- Button to view product details -->
-    <Button
-        android:id="@+id/buttonViewDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="View Details"
-        android:layout_gravity="bottom"
-        android:textColor="@android:color/white"
-        android:background="@drawable/product_item_background"/>
+<!--    &lt;!&ndash; Button to view product details &ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/buttonViewDetails"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="View Details"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:background="@drawable/product_item_background"/>-->
+
+
 </LinearLayout>
