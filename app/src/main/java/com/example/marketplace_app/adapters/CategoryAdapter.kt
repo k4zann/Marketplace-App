@@ -14,7 +14,7 @@ class CategoryAdapter(
 
     fun setCategories(newCategories: List<String>) {
         val diffResult = DiffUtil.calculateDiff(CategoryDiffCallback(categories, newCategories))
-        categories = newCategories
+        categories = listOf("All") + newCategories
         diffResult.dispatchUpdatesTo(this)
     }
 

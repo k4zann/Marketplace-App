@@ -18,8 +18,7 @@
         android:background="@drawable/search_view_bg"
         android:padding="8dp"
         android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="8dp"
-        android:imeOptions="actionSearch"/>
+        android:drawablePadding="8dp"/>
 
     <!-- Categories title -->
     <TextView

@@ -1,4 +1,4 @@
-package com.example.marketplace_app
+package com.example.marketplace_app.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.marketplace_app.R
 
 class ImageCarouselAdapter(private val images: List<String>) : RecyclerView.Adapter<ImageCarouselAdapter.ImageViewHolder>() {
 

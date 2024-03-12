@@ -3,16 +3,21 @@ package com.example.marketplace_app
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.marketplace_app.adapters.ProductAdapter
+import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
-import kotlinx.coroutines.Dispatchers
+import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.viewModel.ProductsViewModel
+import com.example.marketplace_app.viewModel.ProductsViewModelFactory
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ProductsActivity : AppCompatActivity() {
 
@@ -20,172 +25,99 @@ class ProductsActivity : AppCompatActivity() {
     private lateinit var recyclerViewCategories: RecyclerView
     private lateinit var productAdapter: ProductAdapter
     private lateinit var categoryAdapter: CategoryAdapter
-    private var productList: MutableList<Product> = mutableListOf()
-    private var categoryList: List<String> = listOf()
+
+    private lateinit var searchEditText: EditText
+
     private var skip = 0
     private var limit = 20
     private var total = 0
     private var isLoading = false
 
+
+    private val viewModel: ProductsViewModel by lazy {
+        val productRepository = ProductRepository(ProductApi.INSTANCE)
+        ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
+        initViews()
+        setupSearch()
+        setupRecyclerViews()
+        observeViewModel()
+    }
+
+    private fun initViews() {
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts)
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories)
-        recyclerViewCategories.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        categoryAdapter = CategoryAdapter(categoryList) { category ->
+        searchEditText = findViewById(R.id.editTextSearch)
+    }
+
+    private fun setupSearch() {
+        searchEditText.setOnEditorActionListener { _, _, _ ->
+            val query = searchEditText.text.toString()
+            lifecycleScope.launch {
+                viewModel.searchProducts(query)
+            }
+            true
+        }
+    }
+
+    private fun setupRecyclerViews() {
+        recyclerViewCategories.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        categoryAdapter = CategoryAdapter(emptyList()) { category ->
             loadByCategory(category)
         }
         recyclerViewCategories.adapter = categoryAdapter
+
         val layoutManager = GridLayoutManager(this, 2)
         recyclerViewProducts.layoutManager = layoutManager
-        productAdapter = ProductAdapter(productList)
+        productAdapter = ProductAdapter(mutableListOf())
         recyclerViewProducts.adapter = productAdapter
+
         recyclerViewProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                if (!isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0
-                ) {
+                if (!isLoading && layoutManager.findLastCompletelyVisibleItemPosition() == productAdapter.itemCount - 1) {
                     loadMoreItems()
                 }
             }
         })
     }
 
+    private fun observeViewModel() {
+        viewModel.products.observe(this) { products ->
+            productAdapter.updateProducts(products as MutableList<Product>)
+        }
 
-    override fun onStart() {
-        super.onStart()
-        setupSearchView()
-        loadCategories()
-        loadProducts()
-    }
+        viewModel.categories.observe(this) { categories ->
+            categoryAdapter.setCategories(categories)
+        }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun loadProducts() {
+        viewModel.searchResults.observe(this) { searchResults ->
+            productAdapter.updateProducts(searchResults as MutableList<Product>)
+        }
+
         lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    ProductApi.INSTANCE.getProducts(skip, limit).execute()
-                }
-                if (response.isSuccessful) {
-                    val productResponse = response.body()
-                    val data = productResponse?.products ?: emptyList()
-                    total = productResponse?.total ?: 0
-                    productList.addAll(data)
-                    productAdapter.notifyDataSetChanged()
-                    skip += limit
-                } else {
-                    Log.e("ProductsActivity", "Failed to fetch products: ${response.errorBody()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductsActivity", "Error loading products", e)
-            }
+            viewModel.loadProducts()
+            viewModel.loadCategories()
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreItems() {
+        if (isLoading) return
         isLoading = true
         lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    ProductApi.INSTANCE.getProducts(skip, limit).execute()
-                }
-                if (response.isSuccessful) {
-                    val productResponse = response.body()
-                    val data = productResponse?.products ?: emptyList()
-                    productList.addAll(data)
-                    productAdapter.notifyDataSetChanged()
-                    isLoading = false
-                    skip += limit
-                } else {
-                    Log.e("ProductsActivity", "Failed to fetch products: ${response.errorBody()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductsActivity", "Error loading more products", e)
-            }
+            viewModel.loadMoreProducts()
+            isLoading = false
         }
     }
 
-    private fun setupSearchView() {
-        val searchView = findViewById<EditText>(R.id.editTextSearch)
-        searchView.setOnEditorActionListener { _, _, _ ->
-            val query = searchView.text.toString()
-            performSearch(query)
-            true
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun performSearch(query: String) {
-        lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    ProductApi.INSTANCE.searchProducts(query).execute()
-                }
-                if (response.isSuccessful) {
-                    val data = response.body()?.products ?: emptyList()
-                    total = response.body()?.total ?: 0
-                    productAdapter.updateProducts(data.toMutableList())
-                    productAdapter.notifyDataSetChanged()
-                } else {
-                    Log.e("ProductsActivity", "Failed to fetch search results: ${response.errorBody()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductsActivity", "Error searching products", e)
-            }
-        }
-    }
-
-
-    private fun loadCategories() {
-        lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    ProductApi.INSTANCE.getCategories().execute()
-                }
-                if (response.isSuccessful) {
-                    var categories = response.body() ?: emptyList()
-                    categories = categories.map { it.capitalize() }
-                    categories = listOf("All") + categories
-                    Log.d("ProductsActivity", "Categories: $categories")
-                    categoryAdapter.setCategories(categories)
-                } else {
-                    Log.e("ProductsActivity", "Failed to fetch categories: ${response.errorBody()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductsActivity", "Error loading categories", e)
-            }
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
     private fun loadByCategory(category: String) {
         lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    if (category == "All") {
-                        ProductApi.INSTANCE.getProducts(0, limit).execute()
-                    } else {
-                        ProductApi.INSTANCE.getProductsByCategory(category).execute()
-                    }
-                }
-                if (response.isSuccessful) {
-                    val data = response.body()?.products ?: emptyList()
-                    total = response.body()?.total ?: 0
-                    productAdapter.updateProducts(data.toMutableList())
-                    productAdapter.notifyDataSetChanged()
-                } else {
-                    Log.e("ProductsActivity", "Failed to fetch products by category: ${response.errorBody()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductsActivity", "Error loading products by category", e)
-            }
+            viewModel.loadProductsByCategory(category)
         }
     }
-
 }

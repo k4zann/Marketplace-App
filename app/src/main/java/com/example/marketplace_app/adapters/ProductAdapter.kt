@@ -1,5 +1,5 @@
 // ProductAdapter.kt
-package com.example.marketplace_app
+package com.example.marketplace_app.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,6 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.marketplace_app.DiffCallback
+import com.example.marketplace_app.ProductActivity
+import com.example.marketplace_app.R
 import com.example.marketplace_app.data.Product
 
 class ProductAdapter(
