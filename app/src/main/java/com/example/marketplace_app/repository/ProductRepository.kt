@@ -7,7 +7,7 @@ import com.google.android.gms.common.api.Status
 
 class ProductRepository(private val productApi: ProductApi) {
 
-    suspend fun getProducts(skip: Int, limit: Int): List<Product> {
+    fun getProducts(skip: Int, limit: Int): List<Product> {
         val response = productApi.getProducts(skip, limit).execute()
         if (response.isSuccessful) {
             return response.body()?.products ?: emptyList()
@@ -16,7 +16,7 @@ class ProductRepository(private val productApi: ProductApi) {
         }
     }
 
-    suspend fun getProduct(id: Long): Product {
+    fun getProduct(id: Long): Product {
         val response = productApi.getProduct(id).execute()
         if (response.isSuccessful) {
             return response.body() ?: throw ApiException(Status(404, "Product not found"))
@@ -25,7 +25,7 @@ class ProductRepository(private val productApi: ProductApi) {
         }
     }
 
-    suspend fun searchProducts(query: String): List<Product> {
+    fun searchProducts(query: String): List<Product> {
         val response = productApi.searchProducts(query).execute()
         if (response.isSuccessful) {
             return response.body()?.products ?: emptyList()
@@ -34,7 +34,7 @@ class ProductRepository(private val productApi: ProductApi) {
         }
     }
 
-    suspend fun getCategories(): List<String> {
+    fun getCategories(): List<String> {
         val response = productApi.getCategories().execute()
         if (response.isSuccessful) {
             return response.body() ?: emptyList()
@@ -43,7 +43,7 @@ class ProductRepository(private val productApi: ProductApi) {
         }
     }
 
-    suspend fun getProductsByCategory(category: String): List<Product> {
+    fun getProductsByCategory(category: String): List<Product> {
         val response = productApi.getProductsByCategory(category).execute()
         if (response.isSuccessful) {
             return response.body()?.products ?: emptyList()

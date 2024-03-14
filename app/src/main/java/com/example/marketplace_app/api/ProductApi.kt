@@ -30,7 +30,7 @@ interface ProductApi {
     fun getProductsByCategory(@Path("categoryName") categoryName: String): Call<ProductList>
 
     companion object {
-        val INSTANCE = Retrofit.Builder()
+        val INSTANCE: ProductApi = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://dummyjson.com/")
             .build()

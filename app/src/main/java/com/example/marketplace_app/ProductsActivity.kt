@@ -1,9 +1,6 @@
 package com.example.marketplace_app
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.marketplace_app.adapters.CategoryAdapter
 import com.example.marketplace_app.adapters.ProductAdapter
 import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
@@ -28,9 +26,6 @@ class ProductsActivity : AppCompatActivity() {
 
     private lateinit var searchEditText: EditText
 
-    private var skip = 0
-    private var limit = 20
-    private var total = 0
     private var isLoading = false
 
 

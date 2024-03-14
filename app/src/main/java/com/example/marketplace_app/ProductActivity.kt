@@ -37,10 +37,7 @@ class ProductActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product)
-
         productViewModel = ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
-
-
         productTitle = findViewById(R.id.product_name_value)
         productDescription = findViewById(R.id.product_description_text)
         productPrice = findViewById(R.id.product_price_value)
@@ -59,7 +56,6 @@ class ProductActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Fetch product details
         val productId = intent.getLongExtra("productId", -1L)
         if (productId != -1L) {
             loadProduct(productId)
@@ -86,7 +82,6 @@ class ProductActivity : AppCompatActivity() {
 
     private fun setAddToCartClickListener() {
         fabAddToCart.setOnClickListener {
-            // Add product to cart
         }
     }
 
