@@ -14,9 +14,10 @@ import com.example.marketplace_app.adapters.diffUtil.DiffCallback
 import com.example.marketplace_app.ProductActivity
 import com.example.marketplace_app.R
 import com.example.marketplace_app.data.Product
-
+// перевести на ListAdapter везде
 class ProductAdapter(
-    private var productList: MutableList<Product>
+    private var productList: MutableList<Product>,
+    private val onClickItem: (Long) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -44,16 +45,9 @@ class ProductAdapter(
         private val productImage: ImageView = itemView.findViewById(R.id.imageViewThumbnail)
 
         init {
+            // вынеси в onCreateViewHolder
             itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val product = productList[position]
-                    val context = itemView.context
-                    val intent = Intent(context, ProductActivity::class.java).apply {
-                        putExtra("productId", product.id)
-                    }
-                    context.startActivity(intent)
-                }
+                onClickItem.invoke(productList[adapterPosition].id)
             }
         }
 

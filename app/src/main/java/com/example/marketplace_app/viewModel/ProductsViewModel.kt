@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.marketplace_app.data.Product
 import com.example.marketplace_app.repository.ProductRepository
 import kotlinx.coroutines.CoroutineScope
@@ -28,9 +29,12 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     val product: LiveData<Product>
         get() = _product
 
+    private val _isLoadingLiveData = MutableLiveData<Boolean>()
+    val isLoadingLiveData: LiveData<Boolean>
+        get() = _isLoadingLiveData
 
     fun loadProducts() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
                 val products = productRepository.getProducts(0, 20)
                 _products.postValue(products)
@@ -42,17 +46,21 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     }
 
     fun loadMoreProducts() {
-        CoroutineScope(Dispatchers.IO).launch {
+        _isLoadingLiveData.value = true
+        viewModelScope.launch {
             try {
                 val products = productRepository.getProducts(_products.value?.size ?: 0, 20)
                 _products.postValue(_products.value?.plus(products))
             } catch (e: Exception) {
                 Log.d("ProductsViewModel", "Failed to load more products", e)
+            } finally {
+                _isLoadingLiveData.value = false
             }
         }
     }
 
     fun loadProduct(id: Long) {
+        // замени на viewModelScope
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val product = productRepository.getProduct(id)
@@ -68,7 +76,7 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     fun loadCategories() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val categories = productRepository.getCategories()
+                val categories = listOf("All") + productRepository.getCategories()
                 _categories.postValue(categories)
             } catch (e: Exception) {
                 // Handle error

@@ -9,13 +9,14 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+// везде suspend fun, и убираешь Call, возвращаешь сам тип
 interface ProductApi {
 
     @GET("products")
-    fun getProducts(
+    suspend fun getProducts(
         @Query("skip") skip: Int,
         @Query("limit") limit: Int
-    ): Call<ProductList>
+    ): ProductList
 
     @GET("products/{id}")
     fun getProduct(@Path("id") id: Long): Call<Product>
@@ -30,6 +31,8 @@ interface ProductApi {
     fun getProductsByCategory(@Path("categoryName") categoryName: String): Call<ProductList>
 
     companion object {
+        // посмотри на buildGradle в buildTypes из пятого урока где объявляю ссылку
+        // погугли насчет как пользоваться BuildConfig, какие настройки нужны поставить в градле
         val INSTANCE: ProductApi = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://dummyjson.com/")
