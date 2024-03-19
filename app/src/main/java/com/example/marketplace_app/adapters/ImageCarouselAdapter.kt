@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marketplace_app.R
 
-class ImageCarouselAdapter(private val images: List<String>) : RecyclerView.Adapter<ImageCarouselAdapter.ImageViewHolder>() {
+class ImageCarouselAdapter(
+    private val images: List<String>
+) : RecyclerView.Adapter<ImageCarouselAdapter.ImageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_carousel_item, parent, false)

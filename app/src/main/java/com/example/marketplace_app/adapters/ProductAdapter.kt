@@ -9,14 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.marketplace_app.adapters.diffUtil.DiffCallback
 import com.example.marketplace_app.R
+import com.example.marketplace_app.adapters.diffUtil.ProductDiffCallback
 import com.example.marketplace_app.data.Product
 
 
 class ProductAdapter(
     private val onClickItem: (Long) -> Unit
-) : ListAdapter<Product, ProductAdapter.ProductViewHolder>(DiffCallback()) {
+) : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_item, parent, false)

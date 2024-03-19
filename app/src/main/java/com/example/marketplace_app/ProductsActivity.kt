@@ -2,7 +2,6 @@ package com.example.marketplace_app
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +12,7 @@ import com.example.marketplace_app.adapters.CategoryAdapter
 import com.example.marketplace_app.adapters.ProductAdapter
 import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.databinding.ActivityProductsBinding
 import com.example.marketplace_app.repository.ProductRepository
 import com.example.marketplace_app.viewModel.ProductsViewModel
 import com.example.marketplace_app.viewModel.ProductsViewModelFactory
@@ -20,12 +20,9 @@ import kotlinx.coroutines.launch
 
 class ProductsActivity : AppCompatActivity() {
 
-    private lateinit var recyclerViewProducts: RecyclerView
-    private lateinit var recyclerViewCategories: RecyclerView
+    private lateinit var binding: ActivityProductsBinding
     private lateinit var productAdapter: ProductAdapter
     private lateinit var categoryAdapter: CategoryAdapter
-
-    private lateinit var searchEditText: EditText
 
     private var isLoading = false
 
@@ -36,71 +33,80 @@ class ProductsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_products)
+        binding = ActivityProductsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initViews()
-        setupSearch()
-        setupRecyclerViews()
         observeViewModel()
     }
 
     private fun initViews() {
-        recyclerViewProducts = findViewById(R.id.recyclerViewProducts)
-        recyclerViewCategories = findViewById(R.id.recyclerViewCategories)
-        searchEditText = findViewById(R.id.editTextSearch)
+        setupRecyclerViewCategory()
+        setupRecyclerViewProducts()
+        setupSearch()
     }
 
     private fun setupSearch() {
-        searchEditText.setOnEditorActionListener { _, _, _ ->
-            val query = searchEditText.text.toString()
+        binding.editTextSearch.setOnEditorActionListener { _, _, _ ->
+            val query = binding.editTextSearch.text.toString()
             viewModel.searchProducts(query)
             true
         }
     }
 
-    private fun setupRecyclerViews() {
-        recyclerViewCategories.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        categoryAdapter = CategoryAdapter() { category ->
-            loadByCategory(category)
-        }
-        recyclerViewCategories.adapter = categoryAdapter
-
-        val layoutManager = GridLayoutManager(this, 2)
-        recyclerViewProducts.layoutManager = layoutManager
-        productAdapter = ProductAdapter() { productId ->
-            onProductClick(productId)
-        }
-        recyclerViewProducts.adapter = productAdapter
-
-        recyclerViewProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!isLoading && layoutManager.findLastCompletelyVisibleItemPosition() == productAdapter.itemCount - 1) {
-                    loadMoreItems()
-                }
+    private fun setupRecyclerViewCategory() {
+        binding.apply {
+            recyclerViewCategories.layoutManager =
+                LinearLayoutManager(this@ProductsActivity, LinearLayoutManager.HORIZONTAL, false)
+            categoryAdapter = CategoryAdapter() { category ->
+                loadByCategory(category)
             }
-        })
+            recyclerViewCategories.adapter = categoryAdapter
+
+        }
+    }
+
+    private fun setupRecyclerViewProducts() {
+        binding.apply {
+            val layoutManager = GridLayoutManager(this@ProductsActivity, 2)
+            recyclerViewProducts.layoutManager = layoutManager
+            productAdapter = ProductAdapter() { productId ->
+                onProductClick(productId)
+            }
+            recyclerViewProducts.adapter = productAdapter
+
+            recyclerViewProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (!isLoading && layoutManager.findLastCompletelyVisibleItemPosition() == productAdapter.itemCount - 1) {
+                        loadMoreItems()
+                    }
+                }
+            })
+        }
     }
 
     private fun observeViewModel() {
-        viewModel.products.observe(this) { products ->
-            productAdapter.submitList(products as MutableList<Product>)
-        }
+        viewModel.apply {
+            products.observe(this@ProductsActivity) { products ->
+                productAdapter.submitList(products as MutableList<Product>)
+            }
 
-        viewModel.categories.observe(this) { categories ->
-            categoryAdapter.submitList(categories as MutableList<String>)
-        }
+            categories.observe(this@ProductsActivity) { categories ->
+                categoryAdapter.submitList(categories as MutableList<String>)
+            }
 
-        viewModel.searchResults.observe(this) { searchResults ->
-            productAdapter.submitList(searchResults as MutableList<Product>)
-        }
+            searchResults.observe(this@ProductsActivity) { searchResults ->
+                productAdapter.submitList(searchResults as MutableList<Product>)
+            }
 
-        viewModel.isLoadingLiveData.observe(this) { isLoading ->
-            // handle loading state if needed
-        }
+            isLoadingLiveData.observe(this@ProductsActivity) { isLoading ->
+                // handle loading state if needed
+            }
 
-        viewModel.loadProducts()
-        viewModel.loadCategories()
+            loadProducts()
+            loadCategories()
+        }
     }
 
     private fun loadMoreItems() {
