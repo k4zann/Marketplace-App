@@ -1,45 +1,49 @@
-package com.example.marketplace_app
+package com.example.marketplace_app.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.marketplace_app.adapters.ImageCarouselAdapter
+import com.example.marketplace_app.R
 import com.example.marketplace_app.api.ProductApi
 import com.example.marketplace_app.data.Product
-import com.example.marketplace_app.databinding.ActivityProductBinding
+import com.example.marketplace_app.databinding.FragmentProductBinding
 import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.ui.adapters.ImageCarouselAdapter
 import com.example.marketplace_app.viewModel.ProductsViewModel
 import com.example.marketplace_app.viewModel.ProductsViewModelFactory
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ProductActivity : AppCompatActivity() {
+class ProductFragment : Fragment(R.layout.fragment_product) {
 
-    private lateinit var binding: ActivityProductBinding
+    private lateinit var binding: FragmentProductBinding
     private val productRepository = ProductRepository(ProductApi.INSTANCE)
     private lateinit var productViewModel: ProductsViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityProductBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentProductBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         productViewModel = ViewModelProvider(this, ProductsViewModelFactory(productRepository))
             .get(ProductsViewModel::class.java)
 
         binding.backButton.setOnClickListener {
-            onBackPressed()
+            requireActivity().onBackPressed()
         }
+
+        loadProduct()
     }
 
-    override fun onStart() {
-        super.onStart()
-        val productId = intent.getLongExtra("productId", -1L)
-        if (productId != -1L) {
-            loadProduct(productId)
-        }
-    }
 
     @SuppressLint("SetTextI18n")
     private fun setProductDetails(product: Product) {
@@ -56,7 +60,7 @@ class ProductActivity : AppCompatActivity() {
         val adapter = ImageCarouselAdapter(images)
         binding.imageCarousel.adapter = adapter
         binding.imageCarousel.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setAddToCartClickListener() {
@@ -65,13 +69,12 @@ class ProductActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadProduct(productId: Long) {
-        productViewModel.loadProduct(productId)
-        productViewModel.product.observe(this@ProductActivity) { product ->
+    private fun loadProduct() {
+        productViewModel.product.observe(viewLifecycleOwner) { product ->
+            Log.d("ProductFragment", "Product: $product")
             setProductDetails(product)
             setCarouselImages(product.images)
             setAddToCartClickListener()
         }
     }
 }
-

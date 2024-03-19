@@ -1,4 +1,4 @@
-package com.example.marketplace_app.adapters
+package com.example.marketplace_app.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View

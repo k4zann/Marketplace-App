@@ -1,4 +1,4 @@
-package com.example.marketplace_app.adapters
+package com.example.marketplace_app.ui.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marketplace_app.R
-import com.example.marketplace_app.adapters.diffUtil.DiffCallback
+import com.example.marketplace_app.ui.adapters.diffUtil.DiffCallback
 
 class CategoryAdapter(
     private val onItemClick: (String) -> Unit

@@ -1,4 +1,4 @@
-package com.example.marketplace_app.adapters.diffUtil
+package com.example.marketplace_app.ui.adapters.diffUtil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.marketplace_app.data.Product

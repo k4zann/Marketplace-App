@@ -1,4 +1,4 @@
-package com.example.marketplace_app.adapters
+package com.example.marketplace_app.ui.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marketplace_app.R
-import com.example.marketplace_app.adapters.diffUtil.ProductDiffCallback
+import com.example.marketplace_app.ui.adapters.diffUtil.ProductDiffCallback
 import com.example.marketplace_app.data.Product
 
 
@@ -18,11 +19,13 @@ class ProductAdapter(
     private val onClickItem: (Long) -> Unit
 ) : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback()) {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_item, parent, false)
         val viewHolder = ProductViewHolder(view)
         viewHolder.itemView.setOnClickListener {
-            onClickItem.invoke(getItem(viewHolder.adapterPosition).id)
+            val position = viewHolder.adapterPosition
+            onClickItem(getItem(position).id)
         }
         return viewHolder
     }
