@@ -1,5 +1,6 @@
 package com.example.marketplace_app.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +18,10 @@ class CategoryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.category_item, parent, false)
-        val viewHolder = CategoryViewHolder(view).apply {
-            itemView.setOnClickListener {
-                onItemClick(currentList[adapterPosition])
-            }
+        val viewHolder = CategoryViewHolder(view)
+        viewHolder.itemView.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            onItemClick(currentList[position])
         }
         return viewHolder
     }
@@ -38,6 +39,7 @@ class CategoryAdapter(
         fun bind(category: String) {
             categoryNameTextView.text = category
         }
+
     }
 }
 

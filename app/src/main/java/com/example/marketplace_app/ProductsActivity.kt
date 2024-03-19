@@ -2,7 +2,11 @@ package com.example.marketplace_app
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +20,10 @@ import com.example.marketplace_app.databinding.ActivityProductsBinding
 import com.example.marketplace_app.repository.ProductRepository
 import com.example.marketplace_app.viewModel.ProductsViewModel
 import com.example.marketplace_app.viewModel.ProductsViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ProductsActivity : AppCompatActivity() {
@@ -23,6 +31,7 @@ class ProductsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductsBinding
     private lateinit var productAdapter: ProductAdapter
     private lateinit var categoryAdapter: CategoryAdapter
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private var isLoading = false
 
@@ -47,11 +56,31 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun setupSearch() {
-        binding.editTextSearch.setOnEditorActionListener { _, _, _ ->
-            val query = binding.editTextSearch.text.toString()
-            viewModel.searchProducts(query)
-            true
-        }
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            private var searchJob: Job? = null
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                searchJob?.cancel()
+                searchJob = coroutineScope.launch {
+                    s?.let {
+                        delay(500)
+                        if (it.isEmpty()) {
+                            viewModel.loadProducts()
+                        } else {
+                            viewModel.searchProducts(it.toString())
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun setupRecyclerViewCategory() {
