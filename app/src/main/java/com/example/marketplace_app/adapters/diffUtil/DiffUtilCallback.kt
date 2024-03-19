@@ -3,15 +3,12 @@ package com.example.marketplace_app.adapters.diffUtil
 import androidx.recyclerview.widget.DiffUtil
 import com.example.marketplace_app.data.Product
 
-class DiffCallback(
-    private val oldList: List<Product>,
-    private val newList: List<Product>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition].name == newList[newItemPosition].name
+class DiffCallback : DiffUtil.ItemCallback<Product>() {
+    override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+        return oldItem == newItem
+    }
 }

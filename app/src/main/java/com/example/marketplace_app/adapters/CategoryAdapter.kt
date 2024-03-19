@@ -10,27 +10,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.marketplace_app.R
 
 class CategoryAdapter(
-    private var categories: List<String>,
     private val onItemClick: (String) -> Unit
 ) : ListAdapter<String, CategoryAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.category_item, parent, false)
         val viewHolder = CategoryViewHolder(view).apply {
             itemView.setOnClickListener {
-                onItemClick(categories[adapterPosition])
+                onItemClick(currentList[adapterPosition])
             }
         }
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val category = categories[position]
+        val category = currentList[position]
         holder.bind(category)
     }
 
-    override fun getItemCount(): Int = categories.size
+    override fun getItemCount(): Int = currentList.size
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val categoryNameTextView: TextView = itemView.findViewById(R.id.category_name)

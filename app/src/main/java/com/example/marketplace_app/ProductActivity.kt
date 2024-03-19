@@ -86,13 +86,11 @@ class ProductActivity : AppCompatActivity() {
     }
 
     private fun loadProduct(productId: Long) {
-        lifecycleScope.launch {
-            productViewModel.loadProduct(productId)
-            productViewModel.product.observe(this@ProductActivity) { product ->
-                setProductDetails(product)
-                setCarouselImages(product.images)
-                setAddToCartClickListener()
-            }
+        productViewModel.loadProduct(productId)
+        productViewModel.product.observe(this@ProductActivity) { product ->
+            setProductDetails(product)
+            setCarouselImages(product.images)
+            setAddToCartClickListener()
         }
     }
 }

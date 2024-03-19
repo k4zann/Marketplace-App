@@ -7,8 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marketplace_app.data.Product
 import com.example.marketplace_app.repository.ProductRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(private val productRepository: ProductRepository) : ViewModel() {
@@ -61,7 +59,7 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
 
     fun loadProduct(id: Long) {
         // замени на viewModelScope
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
                 val product = productRepository.getProduct(id)
                 _product.postValue(product)
@@ -74,9 +72,11 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
 
 
     fun loadCategories() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
-                val categories = listOf("All") + productRepository.getCategories()
+                val categories = listOf("All") + productRepository.getCategories().map {
+                    it.capitalize()
+                }
                 _categories.postValue(categories)
             } catch (e: Exception) {
                 // Handle error
@@ -86,7 +86,7 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     }
 
     fun searchProducts(query: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
                 val products = productRepository.searchProducts(query)
                 _products.postValue(products)
@@ -98,7 +98,7 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     }
 
     fun loadProductsByCategory(category: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
                 val products = if (category == "All") {
                     productRepository.getProducts(0, 20)
