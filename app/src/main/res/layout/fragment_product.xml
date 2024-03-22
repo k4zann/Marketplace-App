@@ -2,12 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp">
 
-    <!-- Toolbar with back button -->
     <Button
         android:id="@+id/back_button"
         android:layout_width="35dp"
@@ -17,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- RecyclerView for carousel of images -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_carousel"
         android:layout_width="0dp"
@@ -27,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Product name -->
     <TextView
         android:id="@+id/product_name_value"
         android:layout_width="wrap_content"
@@ -39,7 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_carousel"/>
 
-    <!-- Product description -->
     <TextView
         android:id="@+id/product_description_text"
         android:layout_width="0dp"
@@ -52,7 +47,6 @@
         app:layout_constraintTop_toBottomOf="@id/product_name_value"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Product price -->
     <TextView
         android:id="@+id/product_price_value"
         android:layout_width="wrap_content"
@@ -64,7 +58,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_description_text"/>
 
-    <!-- Product category -->
     <TextView
         android:id="@+id/product_category_value"
         android:layout_width="wrap_content"
@@ -75,7 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_price_value"/>
 
-    <!-- Product rating -->
     <TextView
         android:id="@+id/product_rating_value"
         android:layout_width="wrap_content"
@@ -86,7 +78,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_category_value"/>
 
-    <!-- Product stock -->
     <TextView
         android:id="@+id/product_stock_value"
         android:layout_width="wrap_content"
@@ -97,7 +88,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_rating_value"/>
 
-    <!-- Product brand -->
     <TextView
         android:id="@+id/product_brand_value"
         android:layout_width="wrap_content"
@@ -110,7 +100,6 @@
 
 
 
-    <!-- Floating action button to add to cart -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_to_cart"
         android:layout_width="wrap_content"

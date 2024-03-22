@@ -1,4 +1,4 @@
-package com.example.marketplace_app.data
+package com.example.marketplace_app.data.models
 
 import com.google.gson.annotations.SerializedName
 

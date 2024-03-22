@@ -1,7 +1,7 @@
-package com.example.marketplace_app.repository
+package com.example.marketplace_app.data.repository
 
-import com.example.marketplace_app.api.ProductApi
-import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.data.api.ProductApi
+import com.example.marketplace_app.data.models.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -1,7 +1,7 @@
-package com.example.marketplace_app.api
+package com.example.marketplace_app.data.api
 
-import com.example.marketplace_app.data.Product
-import com.example.marketplace_app.data.ProductList
+import com.example.marketplace_app.data.models.Product
+import com.example.marketplace_app.data.models.ProductList
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

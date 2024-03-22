@@ -6,22 +6,24 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marketplace_app.R
-import com.example.marketplace_app.api.ProductApi
-import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.data.api.ProductApi
+import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.FragmentProductsBinding
-import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.ui.adapters.CategoryAdapter
 import com.example.marketplace_app.ui.adapters.ProductAdapter
-import com.example.marketplace_app.viewModel.ProductsViewModel
-import com.example.marketplace_app.viewModel.ProductsViewModelFactory
+import com.example.marketplace_app.data.viewModel.ProductsViewModel
+import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -47,8 +49,6 @@ class ProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
-
-
         return binding.root
     }
 
@@ -158,7 +158,7 @@ class ProductsFragment : Fragment() {
     }
 
     private fun onProductClick(productId : Long) {
-        viewModel.loadProduct(productId)
-        Navigation.findNavController(requireView()).navigate(R.id.action_productsFragment_to_productFragment)
+        val bundle = bundleOf("productId" to productId)
+        view?.findNavController()?.navigate(R.id.action_productsFragment_to_productFragment, bundle)
     }
 }

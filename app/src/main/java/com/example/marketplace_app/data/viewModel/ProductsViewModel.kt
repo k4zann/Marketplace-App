@@ -1,12 +1,12 @@
-package com.example.marketplace_app.viewModel
+package com.example.marketplace_app.data.viewModel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marketplace_app.data.Product
-import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.data.models.Product
+import com.example.marketplace_app.data.repository.ProductRepository
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(private val productRepository: ProductRepository) : ViewModel() {

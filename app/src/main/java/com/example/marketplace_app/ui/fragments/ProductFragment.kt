@@ -8,22 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marketplace_app.R
-import com.example.marketplace_app.api.ProductApi
-import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.data.api.ProductApi
+import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.FragmentProductBinding
-import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.ui.adapters.ImageCarouselAdapter
-import com.example.marketplace_app.viewModel.ProductsViewModel
-import com.example.marketplace_app.viewModel.ProductsViewModelFactory
+import com.example.marketplace_app.data.viewModel.ProductsViewModel
+import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
 
 class ProductFragment : Fragment(R.layout.fragment_product) {
 
     private lateinit var binding: FragmentProductBinding
-    private val productRepository = ProductRepository(ProductApi.INSTANCE)
-    private lateinit var productViewModel: ProductsViewModel
 
+    private val productViewModel: ProductsViewModel by lazy {
+        val productRepository = ProductRepository(ProductApi.INSTANCE)
+        ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,16 +37,18 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productViewModel = ViewModelProvider(this, ProductsViewModelFactory(productRepository))
-            .get(ProductsViewModel::class.java)
 
         binding.backButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            view.findNavController().popBackStack()
         }
-
+        initViews()
         loadProduct()
     }
 
+    private fun initViews() {
+        binding.imageCarousel.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
 
     @SuppressLint("SetTextI18n")
     private fun setProductDetails(product: Product) {
@@ -59,22 +64,25 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     private fun setCarouselImages(images: List<String>) {
         val adapter = ImageCarouselAdapter(images)
         binding.imageCarousel.adapter = adapter
-        binding.imageCarousel.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
+    //TODO connect the Room and save the product to the cart, add one more fragmentCart
     private fun setAddToCartClickListener() {
         binding.fabAddToCart.setOnClickListener {
-            // Handle click event
+
         }
     }
 
     private fun loadProduct() {
+
+        val productId = arguments?.getLong("productId") ?: return
+        productViewModel.loadProduct(productId)
         productViewModel.product.observe(viewLifecycleOwner) { product ->
-            Log.d("ProductFragment", "Product: $product")
-            setProductDetails(product)
-            setCarouselImages(product.images)
-            setAddToCartClickListener()
+            product?.let {
+                setProductDetails(it)
+                setCarouselImages(it.images)
+                setAddToCartClickListener()
+            }
         }
     }
 }

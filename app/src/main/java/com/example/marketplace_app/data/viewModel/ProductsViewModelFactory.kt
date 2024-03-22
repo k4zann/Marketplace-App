@@ -1,8 +1,8 @@
-package com.example.marketplace_app.viewModel
+package com.example.marketplace_app.data.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.marketplace_app.repository.ProductRepository
+import com.example.marketplace_app.data.repository.ProductRepository
 
 class ProductsViewModelFactory(private val productRepository: ProductRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

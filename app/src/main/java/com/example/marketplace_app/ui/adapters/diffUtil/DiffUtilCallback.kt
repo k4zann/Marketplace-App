@@ -1,7 +1,7 @@
 package com.example.marketplace_app.ui.adapters.diffUtil
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.data.models.Product
 
 class ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {

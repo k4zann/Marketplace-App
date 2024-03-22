@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marketplace_app.R
 import com.example.marketplace_app.ui.adapters.diffUtil.ProductDiffCallback
-import com.example.marketplace_app.data.Product
+import com.example.marketplace_app.data.models.Product
 
 
 class ProductAdapter(
