@@ -1,6 +1,7 @@
 package com.example.marketplace_app.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +20,14 @@ class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     private lateinit var cartItemAdapter: CartItemAdapter
-    private lateinit var cartDatabase: CartDatabase
 
     private val productViewModel: ProductsViewModel by lazy {
         val productRepository = ProductRepository(ProductApi.INSTANCE, cartDatabase.cartItemDao())
         ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    }
+
+    private val cartDatabase: CartDatabase by lazy {
+        CartDatabase.create(requireContext())
     }
 
     override fun onCreateView(
@@ -43,6 +47,7 @@ class CartFragment : Fragment() {
 
     private fun observeItems() {
         productViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
+            Log.d("CartFragment", "Cart Items: $cartItems")
             cartItemAdapter.submitList(cartItems)
         }
     }
@@ -54,7 +59,6 @@ class CartFragment : Fragment() {
     }
 
     private fun loadCartItems() {
-        cartDatabase = CartDatabase.create(requireContext())
         productViewModel.getCartItems()
     }
 }

@@ -69,7 +69,13 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     //TODO connect the Room and save the product to the cart, add one more fragmentCart
     private fun setAddToCartClickListener() {
         binding.fabAddToCart.setOnClickListener {
-
+            Log.d("ProductFragment", "Add to cart clicked")
+            val product = productViewModel.product.value
+            product?.let {
+                productViewModel.addProductToCart(
+                    it
+                )
+            }
         }
     }
 

@@ -117,10 +117,24 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
         }
     }
 
+    fun getCartItems() {
+        viewModelScope.launch {
+            try {
+                val cartItems = productRepository.getAllProductsFromCart()
+                Log.d("ProductsViewModel", "Cart Items: $cartItems")
+                _cartItems.postValue(cartItems)
+            } catch (e: Exception) {
+                // Handle error
+                Log.d("ProductsViewModel", "Failed to load cart items", e)
+            }
+        }
+    }
+
     fun addProductToCart(product: Product) {
         viewModelScope.launch {
             try {
                 productRepository.addProductToCart(product)
+                Log.d("ProductsViewModel", "Product added to cart: $product")
                 _cartItems.postValue(_cartItems.value?.plus(product))
             } catch (e: Exception) {
                 // Handle error
@@ -129,21 +143,12 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
         }
     }
 
-    fun getCartItems() {
-        viewModelScope.launch {
-            try {
-                val cartItems = productRepository.getAllProductsFromCart()
-                _cartItems.postValue(cartItems)
-            } catch (e: Exception) {
-                // Handle error
-                Log.d("ProductsViewModel", "Failed to load cart items", e)
-            }
-        }
-    }
+
     fun removeProductFromCart(product: Product) {
         viewModelScope.launch {
             try {
                 productRepository.removeProductFromCart(product)
+                Log.d("ProductsViewModel", "Product removed from cart: $product")
                 _cartItems.postValue(_cartItems.value?.filter { it.id != product.id })
             } catch (e: Exception) {
                 // Handle error
