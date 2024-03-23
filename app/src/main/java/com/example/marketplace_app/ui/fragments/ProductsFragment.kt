@@ -40,7 +40,7 @@ class ProductsFragment : Fragment() {
     private var isLoading = false
 
     private val viewModel: ProductsViewModel by lazy {
-        val productRepository = ProductRepository(ProductApi.INSTANCE)
+        val productRepository = ProductRepository(ProductApi.INSTANCE, null)
         ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
     }
 

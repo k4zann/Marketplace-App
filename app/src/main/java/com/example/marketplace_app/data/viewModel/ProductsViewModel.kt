@@ -31,6 +31,10 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
     val isLoadingLiveData: LiveData<Boolean>
         get() = _isLoadingLiveData
 
+    private val _cartItems = MutableLiveData<List<Product>>()
+    val cartItems: LiveData<List<Product>>
+        get() = _cartItems
+
     fun loadProducts() {
         viewModelScope.launch {
             try {
@@ -113,5 +117,39 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
         }
     }
 
+    fun addProductToCart(product: Product) {
+        viewModelScope.launch {
+            try {
+                productRepository.addProductToCart(product)
+                _cartItems.postValue(_cartItems.value?.plus(product))
+            } catch (e: Exception) {
+                // Handle error
+                Log.d("ProductsViewModel", "Failed to add product to cart", e)
+            }
+        }
+    }
+
+    fun getCartItems() {
+        viewModelScope.launch {
+            try {
+                val cartItems = productRepository.getAllProductsFromCart()
+                _cartItems.postValue(cartItems)
+            } catch (e: Exception) {
+                // Handle error
+                Log.d("ProductsViewModel", "Failed to load cart items", e)
+            }
+        }
+    }
+    fun removeProductFromCart(product: Product) {
+        viewModelScope.launch {
+            try {
+                productRepository.removeProductFromCart(product)
+                _cartItems.postValue(_cartItems.value?.filter { it.id != product.id })
+            } catch (e: Exception) {
+                // Handle error
+                Log.d("ProductsViewModel", "Failed to remove product from cart", e)
+            }
+        }
+    }
 
 }

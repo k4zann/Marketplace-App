@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.local.CartDatabase
+import com.example.marketplace_app.data.repository.ProductRepository
+import com.example.marketplace_app.data.viewModel.ProductsViewModel
+import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
 import com.example.marketplace_app.ui.adapters.CartItemAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CartFragment : Fragment() {
 
@@ -20,6 +21,10 @@ class CartFragment : Fragment() {
     private lateinit var cartItemAdapter: CartItemAdapter
     private lateinit var cartDatabase: CartDatabase
 
+    private val productViewModel: ProductsViewModel by lazy {
+        val productRepository = ProductRepository(ProductApi.INSTANCE, cartDatabase.cartItemDao())
+        ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +38,13 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         loadCartItems()
+        observeItems()
+    }
+
+    private fun observeItems() {
+        productViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
+            cartItemAdapter.submitList(cartItems)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -42,13 +54,7 @@ class CartFragment : Fragment() {
     }
 
     private fun loadCartItems() {
-        GlobalScope.launch(Dispatchers.Main) {
-            val cartItems = withContext(Dispatchers.IO) {
-
-                cartDatabase = CartDatabase.getInstance(requireContext())
-                cartDatabase.cartItemDao().getAllCartItems()
-            }
-            cartItemAdapter.submitList(cartItems)
-        }
+        cartDatabase = CartDatabase.create(requireContext())
+        productViewModel.getCartItems()
     }
 }

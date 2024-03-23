@@ -24,7 +24,7 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     private lateinit var binding: FragmentProductBinding
 
     private val productViewModel: ProductsViewModel by lazy {
-        val productRepository = ProductRepository(ProductApi.INSTANCE)
+        val productRepository = ProductRepository(ProductApi.INSTANCE, null)
         ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
     }
     override fun onCreateView(
@@ -80,7 +80,9 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
         productViewModel.product.observe(viewLifecycleOwner) { product ->
             product?.let {
                 setProductDetails(it)
-                setCarouselImages(it.images)
+                it.images?.let {
+                        images -> setCarouselImages(images)
+                }
                 setAddToCartClickListener()
             }
         }

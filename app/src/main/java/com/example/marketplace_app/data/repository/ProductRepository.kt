@@ -1,12 +1,14 @@
 package com.example.marketplace_app.data.repository
 
 import com.example.marketplace_app.data.api.ProductApi
+import com.example.marketplace_app.data.local.CartItemDao
 import com.example.marketplace_app.data.models.Product
+import com.example.marketplace_app.data.mappers.toPresentation
+import com.example.marketplace_app.data.mappers.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// Из пятого урока посмотри на пример Repository, сделай похоже
-class ProductRepository(private val productApi: ProductApi) {
+class ProductRepository(private val productApi: ProductApi, private val cartDao: CartItemDao?) {
 
     suspend fun getProducts(skip: Int, limit: Int): List<Product> =
         withContext(Dispatchers.IO) {
@@ -32,4 +34,21 @@ class ProductRepository(private val productApi: ProductApi) {
         withContext(Dispatchers.IO) {
             productApi.getProductsByCategory(category).products
         }
+
+    suspend fun getAllProductsFromCart(): List<Product> =
+        withContext(Dispatchers.IO) {
+            cartDao?.getAllCartItems()?.map { it.toPresentation() } ?: emptyList()
+        }
+
+    suspend fun addProductToCart(product: Product) {
+        withContext(Dispatchers.IO) {
+            cartDao?.insertCartItem(product.toEntity())
+        }
+    }
+
+    suspend fun removeProductFromCart(product: Product) {
+        withContext(Dispatchers.IO) {
+            cartDao?.deleteCartItem(product.toEntity())
+        }
+    }
 }
