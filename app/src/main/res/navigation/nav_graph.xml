@@ -21,6 +21,9 @@
         android:id="@+id/productFragment"
         android:name="com.example.marketplace_app.ui.fragments.ProductFragment"
         android:label="ProductFragment">
+        <action
+            android:id="@+id/action_productFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
 
     <fragment

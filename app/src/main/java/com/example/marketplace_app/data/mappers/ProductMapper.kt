@@ -5,7 +5,7 @@ import com.example.marketplace_app.data.models.Product
 
 internal fun CartItem.toPresentation() =
     Product(
-        id = id,
+        id = productId,
         name = title,
         productPrice = price,
         description = description,
@@ -19,7 +19,6 @@ internal fun CartItem.toPresentation() =
 
 internal fun Product.toEntity() =
     CartItem(
-        id = id,
         productId = id,
         title = name,
         description = description,

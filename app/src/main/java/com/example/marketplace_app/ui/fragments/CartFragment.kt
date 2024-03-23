@@ -14,6 +14,7 @@ import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
+import com.example.marketplace_app.ui.MainApplication
 import com.example.marketplace_app.ui.adapters.CartItemAdapter
 
 class CartFragment : Fragment() {
@@ -22,9 +23,14 @@ class CartFragment : Fragment() {
     private lateinit var cartItemAdapter: CartItemAdapter
 
     private val productViewModel: ProductsViewModel by lazy {
-        val productRepository = ProductRepository(ProductApi.INSTANCE, cartDatabase.cartItemDao())
+        val productRepository = mainApplication.repository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
     }
+
+    private val mainApplication: MainApplication by lazy {
+        requireActivity().application as MainApplication
+    }
+
 
     private val cartDatabase: CartDatabase by lazy {
         CartDatabase.create(requireContext())

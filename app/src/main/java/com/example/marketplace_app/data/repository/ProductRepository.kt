@@ -1,5 +1,6 @@
 package com.example.marketplace_app.data.repository
 
+import android.util.Log
 import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.local.CartItemDao
 import com.example.marketplace_app.data.models.Product
@@ -37,12 +38,13 @@ class ProductRepository(private val productApi: ProductApi, private val cartDao:
 
     suspend fun getAllProductsFromCart(): List<Product> =
         withContext(Dispatchers.IO) {
-            cartDao?.getAllCartItems()?.map { it.toPresentation() } ?: emptyList()
+            cartDao?.getAllCartItems()!!.map { it.toPresentation() }
         }
 
     suspend fun addProductToCart(product: Product) {
         withContext(Dispatchers.IO) {
             cartDao?.insertCartItem(product.toEntity())
+
         }
     }
 

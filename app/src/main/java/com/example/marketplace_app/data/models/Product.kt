@@ -1,7 +1,7 @@
 package com.example.marketplace_app.data.models
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializable as Serializable
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(

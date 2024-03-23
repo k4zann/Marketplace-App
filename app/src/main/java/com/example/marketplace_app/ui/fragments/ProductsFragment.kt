@@ -24,6 +24,7 @@ import com.example.marketplace_app.ui.adapters.CategoryAdapter
 import com.example.marketplace_app.ui.adapters.ProductAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
+import com.example.marketplace_app.ui.MainApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,8 +41,12 @@ class ProductsFragment : Fragment() {
     private var isLoading = false
 
     private val viewModel: ProductsViewModel by lazy {
-        val productRepository = ProductRepository(ProductApi.INSTANCE, null)
+        val productRepository = mainApplication.repository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    }
+
+    private val mainApplication: MainApplication by lazy {
+        requireActivity().application as MainApplication
     }
 
     override fun onCreateView(
