@@ -34,4 +34,14 @@
             android:text="Price: $0.00"
             android:textSize="14sp" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imageButtonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete"
+        android:contentDescription="Delete Item"
+        android:background="?attr/selectableItemBackground"
+        android:padding="8dp" />
+
 </LinearLayout>

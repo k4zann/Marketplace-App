@@ -10,11 +10,20 @@ import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.ItemCartBinding
 import com.example.marketplace_app.ui.adapters.diffUtil.ProductDiffCallback
 
-class CartItemAdapter : ListAdapter<Product, CartItemAdapter.CartItemViewHolder>(ProductDiffCallback()) {
+class CartItemAdapter(
+    private val onItemClick: (Product) -> Unit
+) : ListAdapter<Product, CartItemAdapter.CartItemViewHolder>(ProductDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartItemViewHolder {
         val binding = ItemCartBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartItemViewHolder(binding)
+        val viewHolder = CartItemViewHolder(binding)
+
+        binding.imageButtonDelete.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            val product = getItem(position)
+            onItemClick(product)
+        }
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: CartItemViewHolder, position: Int) {

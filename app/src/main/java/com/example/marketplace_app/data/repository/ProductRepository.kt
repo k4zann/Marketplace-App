@@ -8,8 +8,9 @@ import com.example.marketplace_app.data.mappers.toPresentation
 import com.example.marketplace_app.data.mappers.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ProductRepository(private val productApi: ProductApi) {
+class ProductRepository @Inject constructor(private val productApi: ProductApi) {
 
     suspend fun getProducts(skip: Int, limit: Int): List<Product> =
         withContext(Dispatchers.IO) {

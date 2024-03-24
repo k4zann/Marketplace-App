@@ -27,5 +27,6 @@ internal fun Product.toEntity() =
         category = category,
         rating = rating,
         stock = stock,
-        brand = brand
+        brand = brand,
+        quantity = 1
     )

@@ -2,14 +2,14 @@ package com.example.marketplace_app.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.marketplace_app.R
 import com.example.marketplace_app.databinding.ActivityMainBinding
-import com.example.marketplace_app.ui.fragments.ProductsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -19,10 +19,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
-
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
@@ -45,5 +44,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 }
+

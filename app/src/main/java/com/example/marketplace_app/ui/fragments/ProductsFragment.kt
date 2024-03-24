@@ -11,26 +11,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marketplace_app.R
-import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.FragmentProductsBinding
-import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.ui.adapters.CategoryAdapter
 import com.example.marketplace_app.ui.adapters.ProductAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
-import com.example.marketplace_app.ui.MainApplication
+import com.example.marketplace_app.MainApplication
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class ProductsFragment : Fragment() {
 
     private lateinit var binding: FragmentProductsBinding
@@ -41,7 +39,7 @@ class ProductsFragment : Fragment() {
     private var isLoading = false
 
     private val viewModel: ProductsViewModel by lazy {
-        val productRepository = mainApplication.repository
+        val productRepository = mainApplication.productRepository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 

@@ -25,4 +25,6 @@ data class CartItem(
     val stock: Int,
     @ColumnInfo(name = "brand")
     val brand: String,
+    @ColumnInfo(name="quantity")
+    val quantity: Int
 )

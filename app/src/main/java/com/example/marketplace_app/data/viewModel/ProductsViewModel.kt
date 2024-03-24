@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.data.repository.ProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-
+@HiltViewModel
 class ProductsViewModel(private val productRepository: ProductRepository) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()

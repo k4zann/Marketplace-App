@@ -8,31 +8,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marketplace_app.R
-import com.example.marketplace_app.data.api.ProductApi
-import com.example.marketplace_app.data.local.CartDatabase
-import com.example.marketplace_app.data.local.CartItemDao
 import com.example.marketplace_app.data.models.CartEvent
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.FragmentProductBinding
-import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.data.viewModel.CartViewModel
 import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.ui.adapters.ImageCarouselAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
-import com.example.marketplace_app.ui.MainApplication
+import com.example.marketplace_app.MainApplication
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProductFragment : Fragment(R.layout.fragment_product) {
 
     private lateinit var binding: FragmentProductBinding
 
     private val productViewModel: ProductsViewModel by lazy {
-        val productRepository = mainApplication.repository
+        val productRepository = mainApplication.productRepository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 
@@ -44,9 +42,6 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     private val mainApplication: MainApplication by lazy {
         requireActivity().application as MainApplication
     }
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,7 +109,6 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
 
 
     private fun loadProduct() {
-
         val productId = arguments?.getLong("productId") ?: return
         productViewModel.loadProduct(productId)
         productViewModel.product.observe(viewLifecycleOwner) { product ->

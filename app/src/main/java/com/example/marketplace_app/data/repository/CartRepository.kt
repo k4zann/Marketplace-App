@@ -6,8 +6,9 @@ import com.example.marketplace_app.data.mappers.toPresentation
 import com.example.marketplace_app.data.models.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CartRepository(private val cartDao: CartItemDao) {
+class CartRepository @Inject constructor(private val cartDao: CartItemDao) {
 
 
     suspend fun getAllProductsFromCart(): List<Product> =

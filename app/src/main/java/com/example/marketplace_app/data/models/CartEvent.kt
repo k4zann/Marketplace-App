@@ -5,4 +5,5 @@ sealed interface CartEvent {
     data class RemoveFromCart(val product: Product) : CartEvent
     object LoadCart : CartEvent
     object ClearCart : CartEvent
+
 }
