@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 //import com.example.marketplace_app.data.local.MyConverter
 
-@Database(entities = [CartItem::class], version = 1)
+@Database(entities = [CartItem::class], version = 2)
 //@TypeConverter(MyConverter::class)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartItemDao(): CartItemDao

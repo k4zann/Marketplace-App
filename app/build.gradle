@@ -4,7 +4,6 @@ plugins {
     id 'kotlinx-serialization'
     id 'kotlin-kapt'
 }
-
 android {
     namespace 'com.example.marketplace_app'
     compileSdk 34
@@ -17,6 +16,12 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
 
     buildTypes {

@@ -1,19 +1,15 @@
 package com.example.marketplace_app.data.local
 
-
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
 
 @Dao
 interface CartItemDao {
-    @Upsert
-    suspend fun insertCartItem(entity: CartItem) {
-        Log.d("CartItemDao", "insertCartItem: $entity")
-    }
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCartItem(entity: CartItem)
     @Delete
     suspend fun deleteCartItem(entity: CartItem)
 
@@ -22,5 +18,4 @@ interface CartItemDao {
 
     @Query("DELETE FROM cart_items")
     suspend fun clearCart()
-
 }

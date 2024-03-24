@@ -1,5 +1,6 @@
 package com.example.marketplace_app.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.marketplace_app.data.models.CartEvent
 import com.example.marketplace_app.data.viewModel.CartViewModel
 import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
@@ -41,9 +43,8 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        lifecycleScope.launch {
-            observeCartItems()
-        }
+        observeCartItems()
+//        cartViewModel.loadAddedProducts()
     }
 
     private fun setupRecyclerView() {
@@ -52,10 +53,16 @@ class CartFragment : Fragment() {
         binding.recyclerViewCart.adapter = cartItemAdapter
     }
 
-    private suspend fun observeCartItems() {
-        cartViewModel.state.collect { state ->
-            Log.d("CartFragment", "Cart Items: ${state.cartItems}")
-            cartItemAdapter.submitList(state.cartItems)
+    @SuppressLint("SetTextI18n")
+    private fun observeCartItems() {
+        cartViewModel.onEvent(CartEvent.LoadCart)
+        lifecycleScope.launch {
+            cartViewModel.state.collect { cartState ->
+                cartItemAdapter.submitList(cartState.cartItems)
+                val totalPrice = cartState.cartItems.sumOf { it.productPrice }
+                binding.textViewTotalPrice.text = "Total Price: $${totalPrice}"
+            }
         }
+//        cartViewModel.addedProductLiveData.observe(viewLifecycleOwner, cartItemAdapter::submitList)
     }
 }
