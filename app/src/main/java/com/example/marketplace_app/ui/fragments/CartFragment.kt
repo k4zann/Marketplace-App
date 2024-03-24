@@ -7,33 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.marketplace_app.data.api.ProductApi
-import com.example.marketplace_app.data.local.CartDatabase
-import com.example.marketplace_app.data.repository.ProductRepository
-import com.example.marketplace_app.data.viewModel.ProductsViewModel
-import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
+import com.example.marketplace_app.data.viewModel.CartViewModel
+import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
 import com.example.marketplace_app.ui.MainApplication
 import com.example.marketplace_app.ui.adapters.CartItemAdapter
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     private lateinit var cartItemAdapter: CartItemAdapter
 
-    private val productViewModel: ProductsViewModel by lazy {
-        val productRepository = mainApplication.repository
-        ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+    private val cartViewModel: CartViewModel by lazy {
+        val cartRepository = mainApplication.cartRepository
+        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
     }
 
     private val mainApplication: MainApplication by lazy {
         requireActivity().application as MainApplication
-    }
-
-
-    private val cartDatabase: CartDatabase by lazy {
-        CartDatabase.create(requireContext())
     }
 
     override fun onCreateView(
@@ -47,14 +41,8 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        loadCartItems()
-        observeItems()
-    }
-
-    private fun observeItems() {
-        productViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
-            Log.d("CartFragment", "Cart Items: $cartItems")
-            cartItemAdapter.submitList(cartItems)
+        lifecycleScope.launch {
+            observeCartItems()
         }
     }
 
@@ -64,7 +52,10 @@ class CartFragment : Fragment() {
         binding.recyclerViewCart.adapter = cartItemAdapter
     }
 
-    private fun loadCartItems() {
-        productViewModel.getCartItems()
+    private suspend fun observeCartItems() {
+        cartViewModel.state.collect { state ->
+            Log.d("CartFragment", "Cart Items: ${state.cartItems}")
+            cartItemAdapter.submitList(state.cartItems)
+        }
     }
 }

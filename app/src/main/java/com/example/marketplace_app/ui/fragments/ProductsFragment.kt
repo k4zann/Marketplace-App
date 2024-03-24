@@ -42,7 +42,7 @@ class ProductsFragment : Fragment() {
 
     private val viewModel: ProductsViewModel by lazy {
         val productRepository = mainApplication.repository
-        ViewModelProvider(this, ProductsViewModelFactory(productRepository)).get(ProductsViewModel::class.java)
+        ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 
     private val mainApplication: MainApplication by lazy {

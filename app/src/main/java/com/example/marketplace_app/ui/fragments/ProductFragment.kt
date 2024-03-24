@@ -9,15 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marketplace_app.R
 import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.local.CartDatabase
 import com.example.marketplace_app.data.local.CartItemDao
+import com.example.marketplace_app.data.models.CartEvent
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.FragmentProductBinding
 import com.example.marketplace_app.data.repository.ProductRepository
+import com.example.marketplace_app.data.viewModel.CartViewModel
+import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.ui.adapters.ImageCarouselAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
@@ -30,6 +34,11 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     private val productViewModel: ProductsViewModel by lazy {
         val productRepository = mainApplication.repository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
+    }
+
+    private val cartViewModel: CartViewModel by lazy {
+        val cartRepository = mainApplication.cartRepository
+        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
     }
 
     private val mainApplication: MainApplication by lazy {
@@ -83,7 +92,7 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
             Log.d("ProductFragment", "Add to cart clicked")
             val product = productViewModel.product.value
             product?.let {
-                productViewModel.addProductToCart(it)
+                cartViewModel.onEvent(CartEvent.AddToCart(it))
                 showAddToCartDialog()
             }
         }
@@ -93,7 +102,7 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
         val dialogBuilder = AlertDialog.Builder(requireContext())
         dialogBuilder.setTitle("Item Added to Cart")
         dialogBuilder.setMessage("The item has been added to your cart.")
-        dialogBuilder.setPositiveButton("View Cart") { dialog, _ ->
+        dialogBuilder.setPositiveButton("View Cart") { _, _ ->
             view?.findNavController()?.navigate(R.id.action_productFragment_to_cartFragment)
         }
         dialogBuilder.setNegativeButton("Continue Shopping") { dialog, _ ->
