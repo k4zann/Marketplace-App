@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.room.Room
 import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.local.CartDatabase
+import com.example.marketplace_app.data.local.CartItemDao
+import com.example.marketplace_app.data.repository.CartRepository
+import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.utils.notification.ProductNotificationManager
 import dagger.Module
 import dagger.Provides
@@ -38,7 +41,7 @@ class ProductModule {
     @Singleton
     fun provideProductApiService(): ProductApi {
         return Retrofit.Builder()
-            .baseUrl("https://api.example.com/")
+            .baseUrl("https://dummyjson.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ProductApi::class.java)
@@ -47,7 +50,7 @@ class ProductModule {
 
     @Provides
     @Singleton
-    fun provideRoomDatabase(@ApplicationContext context: Context): CartDatabase {
+    fun provideProductDatabase(@ApplicationContext context: Context): CartDatabase {
         return Room.databaseBuilder(
             context,
             CartDatabase::class.java,
@@ -58,5 +61,19 @@ class ProductModule {
     @Provides
     @Singleton
     fun provideCartDao(cartDatabase: CartDatabase) = cartDatabase.cartItemDao()
+
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(productApi: ProductApi): ProductRepository {
+        return ProductRepository(productApi)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideCartRepository(cartDao: CartItemDao): CartRepository {
+        return CartRepository(cartDao)
+    }
 
 }

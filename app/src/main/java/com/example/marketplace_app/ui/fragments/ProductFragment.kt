@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,27 +20,31 @@ import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.ui.adapters.ImageCarouselAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
-import com.example.marketplace_app.MainApplication
+import com.example.marketplace_app.data.repository.CartRepository
+import com.example.marketplace_app.data.repository.ProductRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProductFragment : Fragment(R.layout.fragment_product) {
 
     private lateinit var binding: FragmentProductBinding
 
+    @Inject
+    lateinit var productRepository: ProductRepository
+
+    @Inject
+    lateinit var cartRepository: CartRepository
+
+
     private val productViewModel: ProductsViewModel by lazy {
-        val productRepository = mainApplication.productRepository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 
     private val cartViewModel: CartViewModel by lazy {
-        val cartRepository = mainApplication.cartRepository
         ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
     }
 
-    private val mainApplication: MainApplication by lazy {
-        requireActivity().application as MainApplication
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +74,7 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
         binding.productNameValue.text = product.name
         binding.productDescriptionText.text = product.description
         binding.productPriceValue.text = "${product.productPrice}$"
-        binding.productCategoryValue.text = "Category: ${product.category.capitalize()}"
+        binding.productCategoryValue.text = "Category: ${product.category}"
         binding.productRatingValue.text = "Rating: ${product.rating}"
         binding.productStockValue.text = "Stock: ${product.stock}"
         binding.productBrandValue.text = "Brand: ${product.brand}"

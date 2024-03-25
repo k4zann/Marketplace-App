@@ -10,6 +10,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BroadcastReceiver: BroadcastReceiver() {
+
     @Inject
     lateinit var productNotificationManager: ProductNotificationManager
 
@@ -18,10 +19,10 @@ class BroadcastReceiver: BroadcastReceiver() {
             productNotificationManager.showNotification(
                 ProductNotification(
                     title = "Update Cache",
-                    text = "cache has been updated",
+                    text = "cache has been updated successfully",
                     channelId = "update cache",
                     channelName = R.string.app_name,
-                    icon = R.mipmap.ic_launcher,
+                    icon = R.drawable.ic_notification,
                     channelDescription = R.string.app_name
                 )
             )

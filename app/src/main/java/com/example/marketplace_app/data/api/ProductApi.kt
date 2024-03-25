@@ -29,15 +29,4 @@ interface ProductApi {
     @GET("products/category/{categoryName}")
     suspend fun getProductsByCategory(@Path("categoryName") categoryName: String): ProductList
 
-    companion object {
-        // посмотри на buildGradle в buildTypes из пятого урока где объявляю ссылку
-        // погугли насчет как пользоваться BuildConfig, какие настройки нужны поставить в градле
-
-        private const val BASE_URL = "https://dummyjson.com/"
-        val INSTANCE: ProductApi = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(ProductApi::class.java)
-    }
 }

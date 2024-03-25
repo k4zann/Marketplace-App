@@ -10,7 +10,7 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import com.example.marketplace_app.ui.fragments.MainActivity
+import com.example.marketplace_app.ui.MainActivity
 import com.example.marketplace_app.utils.createNotification
 import com.example.marketplace_app.utils.getPendingIntent
 import java.util.UUID

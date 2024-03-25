@@ -10,7 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductRepository @Inject constructor(private val productApi: ProductApi) {
+class ProductRepository @Inject constructor(
+    private val productApi: ProductApi
+    ) {
 
     suspend fun getProducts(skip: Int, limit: Int): List<Product> =
         withContext(Dispatchers.IO) {

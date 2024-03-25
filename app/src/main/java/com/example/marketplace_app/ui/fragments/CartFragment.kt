@@ -16,23 +16,23 @@ import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.data.viewModel.CartViewModel
 import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
-import com.example.marketplace_app.MainApplication
+import com.example.marketplace_app.data.repository.CartRepository
 import com.example.marketplace_app.ui.adapters.CartItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     private lateinit var cartItemAdapter: CartItemAdapter
 
-    private val cartViewModel: CartViewModel by lazy {
-        val cartRepository = mainApplication.cartRepository
-        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
-    }
+    @Inject
+    lateinit var cartRepository: CartRepository
 
-    private val mainApplication: MainApplication by lazy {
-        requireActivity().application as MainApplication
+    private val cartViewModel: CartViewModel by lazy {
+        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
     }
 
     override fun onCreateView(

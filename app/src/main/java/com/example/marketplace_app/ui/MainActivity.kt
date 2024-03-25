@@ -1,4 +1,4 @@
-package com.example.marketplace_app.ui.fragments
+package com.example.marketplace_app.ui
 
 import android.os.Bundle
 import android.util.Log

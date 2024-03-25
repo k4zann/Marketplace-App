@@ -21,13 +21,15 @@ import com.example.marketplace_app.ui.adapters.CategoryAdapter
 import com.example.marketplace_app.ui.adapters.ProductAdapter
 import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
-import com.example.marketplace_app.MainApplication
+import com.example.marketplace_app.data.repository.ProductRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class ProductsFragment : Fragment() {
 
@@ -38,19 +40,18 @@ class ProductsFragment : Fragment() {
 
     private var isLoading = false
 
+    @Inject
+    lateinit var productRepository: ProductRepository
+
     private val viewModel: ProductsViewModel by lazy {
-        val productRepository = mainApplication.productRepository
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 
-    private val mainApplication: MainApplication by lazy {
-        requireActivity().application as MainApplication
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -95,7 +96,7 @@ class ProductsFragment : Fragment() {
         binding.apply {
             recyclerViewCategories.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            categoryAdapter = CategoryAdapter() { category ->
+            categoryAdapter = CategoryAdapter { category ->
                 loadByCategory(category)
             }
             recyclerViewCategories.adapter = categoryAdapter
@@ -106,7 +107,7 @@ class ProductsFragment : Fragment() {
         binding.apply {
             val layoutManager = GridLayoutManager(requireContext(), 2)
             recyclerViewProducts.layoutManager = layoutManager
-            productAdapter = ProductAdapter() { productId ->
+            productAdapter = ProductAdapter { productId ->
                 onProductClick(productId)
             }
             recyclerViewProducts.adapter = productAdapter

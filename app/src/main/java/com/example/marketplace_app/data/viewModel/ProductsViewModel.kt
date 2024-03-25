@@ -9,8 +9,10 @@ import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.data.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 @HiltViewModel
-class ProductsViewModel(private val productRepository: ProductRepository) : ViewModel() {
+class ProductsViewModel @Inject constructor(private val productRepository: ProductRepository) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>>
@@ -77,7 +79,9 @@ class ProductsViewModel(private val productRepository: ProductRepository) : View
         viewModelScope.launch {
             try {
                 val categories = listOf("All") + productRepository.getCategories().map {
-                    it.capitalize()
+                    it.replaceFirstChar { char ->
+                        if (char.isLowerCase()) char.titlecase() else char.toString()
+                    }
                 }
                 _categories.postValue(categories)
             } catch (e: Exception) {

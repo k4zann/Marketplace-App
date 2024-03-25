@@ -8,7 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class CartRepository @Inject constructor(private val cartDao: CartItemDao) {
+class CartRepository @Inject constructor(
+    private val cartDao: CartItemDao
+    ) {
 
 
     suspend fun getAllProductsFromCart(): List<Product> =
