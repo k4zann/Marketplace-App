@@ -64,14 +64,24 @@ class CartFragment : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupSwipeRefreshLayout() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             cartViewModel.onEvent(CartEvent.LoadCart)
             cartViewModel.saveDataAndFetch()
+            productNotificationManager.showNotification(
+                ProductNotification(
+                    title = "The Product was deleted",
+                    text = "Product was removed from cart successfully",
+                    channelId = "product deleted",
+                    channelName = R.string.app_name,
+                    icon = R.drawable.ic_notification,
+                    channelDescription = R.string.app_name
+                )
+            )
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView() {
         binding.recyclerViewCart.layoutManager = LinearLayoutManager(requireContext())
         cartItemAdapter = CartItemAdapter(
@@ -81,23 +91,13 @@ class CartFragment : Fragment() {
         )
         binding.recyclerViewCart.adapter = cartItemAdapter
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun showAlertDialog(product: Product) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Remove from Cart")
         builder.setMessage("Are you sure you want to remove ${product.name} from cart?")
         builder.setPositiveButton("Yes") { _, _ ->
             cartViewModel.onEvent(CartEvent.RemoveFromCart(product))
-            productNotificationManager.showNotification(
-                ProductNotification(
-                    title = "The Product was deleted",
-                    text = "Product ${product.name} was removed from cart successfully",
-                    channelId = "product deleted",
-                    channelName = R.string.app_name,
-                    icon = R.drawable.ic_notification,
-                    channelDescription = R.string.app_name
-                )
-            )
+
         }
         builder.setNegativeButton("No") { dialog, _ ->
             dialog.dismiss()
