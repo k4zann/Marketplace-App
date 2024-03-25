@@ -22,6 +22,7 @@ import com.example.marketplace_app.data.viewModel.ProductsViewModel
 import com.example.marketplace_app.data.viewModel.ProductsViewModelFactory
 import com.example.marketplace_app.data.repository.CartRepository
 import com.example.marketplace_app.data.repository.ProductRepository
+import com.example.marketplace_app.utils.repository.DataRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -36,13 +37,15 @@ class ProductFragment : Fragment(R.layout.fragment_product) {
     @Inject
     lateinit var cartRepository: CartRepository
 
+    @Inject
+    lateinit var dataRepository: DataRepository
 
     private val productViewModel: ProductsViewModel by lazy {
         ViewModelProvider(this, ProductsViewModelFactory(productRepository))[ProductsViewModel::class.java]
     }
 
     private val cartViewModel: CartViewModel by lazy {
-        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
+        ViewModelProvider(this, CartViewModelFactory(cartRepository, dataRepository))[CartViewModel::class.java]
     }
 
 

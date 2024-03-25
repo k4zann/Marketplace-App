@@ -9,6 +9,7 @@ import com.example.marketplace_app.data.models.CartEvent
 import com.example.marketplace_app.data.models.CartState
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.data.repository.CartRepository
+import com.example.marketplace_app.utils.repository.DataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,13 +20,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val dataRepository: DataRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CartState())
     val state = _state.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), CartState()
     )
+
+
+
 //    private val _addedProductsLiveData = MutableLiveData<List<Product>>()
 //    val addedProductLiveData: LiveData<List<Product>>
 //        get() = _addedProductsLiveData
@@ -42,6 +47,12 @@ class CartViewModel @Inject constructor(
 //            cartRepository.addProductToCart(product)
 //        }
 //    }
+
+    fun saveDataAndFetch() {
+        viewModelScope.launch {
+            dataRepository.fetchDataAndSaveInCache()
+        }
+    }
 
     fun onEvent(event: CartEvent) {
         when (event) {

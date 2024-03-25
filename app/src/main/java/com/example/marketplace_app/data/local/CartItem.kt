@@ -3,9 +3,10 @@ package com.example.marketplace_app.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import javax.inject.Inject
 
 @Entity(tableName = "cart_items")
-data class CartItem(
+data class CartItem @Inject constructor(
     @PrimaryKey
     @ColumnInfo(name = "product_id")
     val productId: Long,

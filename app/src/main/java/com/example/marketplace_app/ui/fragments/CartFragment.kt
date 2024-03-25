@@ -18,6 +18,7 @@ import com.example.marketplace_app.data.viewModel.CartViewModelFactory
 import com.example.marketplace_app.databinding.FragmentCartBinding
 import com.example.marketplace_app.data.repository.CartRepository
 import com.example.marketplace_app.ui.adapters.CartItemAdapter
+import com.example.marketplace_app.utils.repository.DataRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,8 +32,11 @@ class CartFragment : Fragment() {
     @Inject
     lateinit var cartRepository: CartRepository
 
+    @Inject
+    lateinit var dataRepository: DataRepository
+
     private val cartViewModel: CartViewModel by lazy {
-        ViewModelProvider(this, CartViewModelFactory(cartRepository))[CartViewModel::class.java]
+        ViewModelProvider(this, CartViewModelFactory(cartRepository, dataRepository))[CartViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -55,6 +59,7 @@ class CartFragment : Fragment() {
     private fun setupSwipeRefreshLayout() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             cartViewModel.onEvent(CartEvent.LoadCart)
+            cartViewModel.saveDataAndFetch()
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }

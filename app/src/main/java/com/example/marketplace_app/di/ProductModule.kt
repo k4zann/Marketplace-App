@@ -1,14 +1,17 @@
 package com.example.marketplace_app.di
 
+import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import androidx.room.Room
 import com.example.marketplace_app.data.api.ProductApi
 import com.example.marketplace_app.data.local.CartDatabase
+import com.example.marketplace_app.data.local.CartItem
 import com.example.marketplace_app.data.local.CartItemDao
 import com.example.marketplace_app.data.repository.CartRepository
 import com.example.marketplace_app.data.repository.ProductRepository
 import com.example.marketplace_app.utils.notification.ProductNotificationManager
+import com.example.marketplace_app.utils.repository.DataRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,7 +53,7 @@ class ProductModule {
 
     @Provides
     @Singleton
-    fun provideProductDatabase(@ApplicationContext context: Context): CartDatabase {
+    fun provideCartDatabase(@ApplicationContext context: Context): CartDatabase {
         return Room.databaseBuilder(
             context,
             CartDatabase::class.java,
@@ -75,5 +78,19 @@ class ProductModule {
     fun provideCartRepository(cartDao: CartItemDao): CartRepository {
         return CartRepository(cartDao)
     }
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataRepository(cartDao: CartItemDao, context: Context): DataRepository {
+        return DataRepository(cartDao, context)
+    }
+
+
 
 }

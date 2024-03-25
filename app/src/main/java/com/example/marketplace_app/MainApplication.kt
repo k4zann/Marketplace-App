@@ -10,7 +10,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class MainApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
     }

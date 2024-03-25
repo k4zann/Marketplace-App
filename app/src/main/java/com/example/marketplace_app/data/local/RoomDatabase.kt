@@ -14,18 +14,6 @@ import javax.inject.Inject
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartItemDao(): CartItemDao
 
-
-
-    companion object {
-        private const val DATABASE_NAME = "cart_database"
-        fun create(applicationContext: Context): CartDatabase = Room.databaseBuilder(
-            applicationContext,
-            CartDatabase::class.java,
-            DATABASE_NAME
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-    }
 }
 
 
