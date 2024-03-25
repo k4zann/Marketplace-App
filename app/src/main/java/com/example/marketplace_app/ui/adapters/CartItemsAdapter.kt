@@ -1,13 +1,18 @@
 package com.example.marketplace_app.ui.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.marketplace_app.data.models.Product
 import com.example.marketplace_app.databinding.ItemCartBinding
+import com.example.marketplace_app.ui.CartItemView
 import com.example.marketplace_app.ui.adapters.diffUtil.ProductDiffCallback
 
 class CartItemAdapter(
@@ -16,14 +21,7 @@ class CartItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartItemViewHolder {
         val binding = ItemCartBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val viewHolder = CartItemViewHolder(binding)
-
-        binding.imageButtonDelete.setOnClickListener {
-            val position = viewHolder.adapterPosition
-            val product = getItem(position)
-            onItemClick(product)
-        }
-        return viewHolder
+        return CartItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CartItemViewHolder, position: Int) {
@@ -32,15 +30,16 @@ class CartItemAdapter(
     }
 
     inner class CartItemViewHolder(private val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
         fun bind(cartItem: Product) {
-            binding.apply {
-                textViewTitle.text = cartItem.name
-                textViewPrice.text = "$${cartItem.productPrice}"
-
-                Glide.with(itemView)
-                    .load(cartItem.poster)
-                    .into(imageViewThumbnail)
+            binding.composeView.setContent {
+                MaterialTheme {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        CartItemView(
+                            product = cartItem,
+                            onItemClick = onItemClick
+                        )
+                    }
+                }
             }
         }
     }
