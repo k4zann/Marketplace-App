@@ -9,6 +9,11 @@ The **Marketplace App** is an Android application designed to showcase products 
 - Browse products by category.
 - Add products to the cart for purchasing.
 - Scroll through images of each product using a carousel.
+- Utilizes Hilt for dependency injection.
+- Implements SharedPreferences for storing user preferences.
+- Integrates WorkManager for background tasks.
+- Utilizes BroadcastReceiver for listening to system events.
+- Utilizes NotificationManager for displaying notifications.
 
 ## Technologies Used
 
@@ -18,3 +23,8 @@ The **Marketplace App** is an Android application designed to showcase products 
 - **RecyclerView**: Displaying a scrollable list of items efficiently.
 - **Retrofit**: For making HTTP requests to the backend API.
 - **Coroutines**: Used for managing asynchronous tasks.
+- **Hilt**: Dependency injection library for Android.
+- **SharedPreferences**: For storing user preferences locally.
+- **WorkManager**: For managing background tasks efficiently.
+- **BroadcastReceiver**: For listening to system events and broadcasts.
+- **NotificationManager**: For displaying notifications to the user.
